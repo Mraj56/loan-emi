@@ -1,58 +1,109 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
+  <div>
+    <label>Loan Amount</label>
+    <span><input type="Number" v-model="principal"/></span>
+    <br><br>
+    <input type="range" min="0" max="200000000" v-model="principal">
+    <br><br>
+    <label>Tenure (in months)</label>
+    <span><input type="Number" v-model="tenure"/></span>
+    <br><br>
+    <input type="range" min="0" max="3600"  v-model="tenure">
+    <br><br>
+    <label>Interest Rate (per annum)</label>
+    <span><input type="Number" v-model="interestRate"/></span>
+    <br><br>
+    <input type="range" min="1" max="20" step="0.1" v-model="interestRate">
+    <br><br>
+    <button @click="calculate">Calculate EMI</button>
+    <br><br>
+    <div v-if="result !== null">
+      Monthly Payment: {{ result }}
+    </div>
+    <br><br>
   </div>
+  <PieChart :principal="parseFloat(principal)" :interest="parseFloat(totalInterest)" v-if="result !== null"/>
+  <PaymentSchedule :paymentSchedule="paymentSchedule" v-if="paymentSchedule !== null" />
+
 </template>
 
 <script>
+import PieChart from './PieChart.vue'
+import PaymentSchedule from './PaymentShedule.vue'
 export default {
-  name: 'HelloWorld',
-  props: {
-    msg: String
-  }
-}
-</script>
+  components:{
+    PieChart,
+    PaymentSchedule
+  },
+  data() {
+    return {
+      principal: 1000,
+      tenure: 12,
+      interestRate: 1,
+      result: null,
+      paymentSchedule: [],
+    };
+  },
+  computed: {
+    monthlyInterestRate() {
+      return this.interestRate / 1200
+    },
+    totalInterest() {
+      const totalPayment = this.calculateTotalPayment()
+      return totalPayment - this.principal
+    }
+  },
+  methods: {
+    calculateTotalPayment() {
+      const numerator = parseFloat(this.principal) * this.monthlyInterestRate * Math.pow(1 + this.monthlyInterestRate, parseFloat(this.tenure));
+      const denominator = Math.pow(1 + this.monthlyInterestRate, parseFloat(this.tenure)) - 1;
+      return numerator / denominator * parseFloat(this.tenure);
+    },
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-</style>
+    calculate() {
+      const r = this.interestRate / (12 * 100);
+      const n = this.tenure;
+      const p = this.principal;
+      const numerator = p * r * Math.pow(1 + r, n);
+      const denominator = Math.pow(1 + r, n) - 1;
+      const emi = (numerator / denominator).toFixed(2);
+      this.result = emi;
+      this.paymentSchedule = this.generatePaymentSchedule();
+    },
+    
+    generatePaymentSchedule() {
+      const r = this.interestRate / (12 * 100);
+      const n = this.tenure;
+      const p = this.principal;
+      const emi = (p * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+
+      let balance = p;
+      const schedule = [];
+
+      for (let i = 0; i < n; i++) {
+        const interest = balance * r;
+        const principalPaid = emi - interest;
+        balance -= principalPaid;
+
+        const year = Math.floor((i + 1) / 12) + 1; // calculate the year number
+        const found = schedule.find(obj => obj.year === year); // check if a year object already exists in the schedule
+        if (found) { // if year object exists, update its properties
+          found.totalPayment += emi;
+          found.interestPaid += interest;
+          found.principalPaid += principalPaid;
+          found.balance = balance;
+        } else { // otherwise, create a new year object and add it to the schedule
+          schedule.push({
+            year,
+            totalPayment: emi,
+            interestPaid: interest,
+            principalPaid,
+            balance
+          });
+        }
+      }
+      return schedule;
+    }
+  },
+};
+</script>
