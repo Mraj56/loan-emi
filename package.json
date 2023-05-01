@@ -10,6 +10,8 @@
   "dependencies": {
     "highcharts": "^11.0.0",
     "highcharts-vue": "^1.4.0",
+    "sass": "^1.62.1",
+    "sass-loader": "^13.2.2",
     "v-chart-plugin": "^0.2.15",
     "vue": "^3.2.13"
   },

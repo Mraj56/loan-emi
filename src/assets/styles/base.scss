@@ -1,0 +1,181 @@
+.container{
+
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.wrap{
+    width: 600px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-bottom: 25px;
+    .range-slider{
+        input{
+            margin: 10px 0;
+        }
+    }
+    .slider-container {
+        width: 100%;
+        margin-bottom: 1rem;
+      }
+      
+      .slider-value-container {
+        display: flex;
+        justify-content: space-between;
+      }
+      
+      /* .slider-value {
+        width: calc(100% / {{ (max - min) / stepSize + 1 }});
+        text-align: center;
+        font-size: 0.8rem;
+      } */
+        .slider-range-container {
+          width: 100%;
+          height: 4px;
+          position: relative;
+        }
+        input{
+          width: 100%;
+        }
+        .slider-range-track {
+          width: 100%;
+          height: 100%;
+          background-color: #d3d3d3;
+          position: absolute;
+          border-radius: 2px;
+        }
+        
+        .slider-range-thumb {
+          width: 16px;
+          height: 16px;
+          background-color: #ffaa00;
+          border-radius: 50%;
+          position: absolute;
+          top: -6px;
+          border: 2px solid #fff;
+          box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+          transition: all 0.2s ease-in-out;
+        }
+        
+        .slider-range-thumb:hover {
+          background-color: #ffaa00;
+          cursor: pointer;
+        }
+        
+        .slider-range-steps {
+          /* position: absolute; */
+          /* top: -10px; */
+          width: 100%;
+          height: 10px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+        
+        .slider-range-step {
+          width: 2px;
+          height: 6px;
+          background-color: #d3d3d3;
+          border-radius: 1px;
+        }
+    
+}
+.upper{
+    img{
+        margin: 0 8px 0px 7px;
+        width: 10px;
+    }
+    
+    width: 600px;
+    display: flex;
+    justify-content: center;
+    label{
+        width: 35%;
+    }
+    input{
+        width:200px;
+    }
+    
+}
+input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+    // width: 15rem;
+    height: 7px;
+    border-radius: 4px;
+  }
+  
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Override default look */
+    appearance: none;
+    // margin-top: -12px; /* Centers thumb on the track */
+    background-color: #ffaa00;
+    height: 0.8rem;
+    border-radius: 50%;
+    width: 0.8rem;    
+ }
+.payment-schedule {
+    width: 100%;
+    padding: 20px;
+    background-color: #f2f2f2;
+  }
+  
+  .title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  .payment-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    background-color: #fff;
+  }
+  
+  .payment-table th,
+  .payment-table td {
+    padding: 10px;
+    text-align: left;
+    font-size: 16px;
+    line-height: 1.5;
+    border: none;
+  }
+  
+  .payment-table th {
+    background-color: #f2f2f2;
+  }
+  
+  .year-header {
+    width: 25%;
+  }
+  
+  .year-row {
+    cursor: pointer;
+    background-color: #e2e2e2;
+  }
+  
+  .year-btn {
+    background-color: #fff;
+    border: none;
+    text-align: left;
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .month-row {
+    background-color: #f2f2f2;
+    display: none;
+  }
+  
+  .month-row td:first-child {
+    padding-left: 50px;
+  }
